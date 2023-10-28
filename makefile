@@ -4,7 +4,7 @@ CC = g++
 
 CFLAGS = -Wall -Wextra -std=c++17
 
-DEPS = grafo.h VND.o
+DEPS = grafo.h VND.h
 
 OBJS = main.o grafo.o VND.o
 
