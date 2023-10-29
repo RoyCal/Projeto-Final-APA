@@ -8,13 +8,11 @@
 using namespace std;
 
 int main(){
-    auto start_time = chrono::high_resolution_clock::now();
-
     fstream arquivo;
     int n, k, Q, L, r;
     int clienteDaVez, capacidadeRestante, proximoCliente, custoTotal, carros, count_demandas, terceirizados, custoRoteamento, custoTerceirizacao;
     float custoDemanda;
-    string instancia = "n199k17_A";
+    string instancia = "n9k5_A";
 
     vector<vector<int>> listaAdj;
     vector<vector<int>> rotas;
@@ -49,36 +47,7 @@ int main(){
 
     arquivo.close();
 
-    // verificar leitura do arquivo
-
-    // cout << n << endl;
-    // cout << k << endl;
-    // cout << Q << endl;
-    // cout << L << endl;
-    // cout << r << endl;
-
-    // cout << endl;
-
-    // for(int i : d){
-    //     cout << i << " ";
-    // }
-
-    // cout << endl << endl;
-
-    // for(int i : p){
-    //     cout << i << " ";
-    // }
-
-    // cout << endl << endl;
-
-    // for(int i = 0; i < n+1; i++){
-    //     for(int j = 0; j < n+1; j++){
-    //         cout << Matriz[i][j] << " ";
-    //     }
-    //     cout << endl;
-    // }
-
-    // return 0;
+    auto guloso_start = chrono::high_resolution_clock::now();
 
     Grafo grafo(n+1);
 
@@ -124,15 +93,10 @@ int main(){
         }
     }
 
-    //cout << endl;
-    //grafo.imprimirGrafo();
+    auto guloso_end = chrono::high_resolution_clock::now();
+    auto duration_guloso = chrono::duration_cast<chrono::nanoseconds>(guloso_end - guloso_start);
+
     listaAdj = grafo.listaAdjacencia();
-
-    //cout << endl;
-
-    // cout << "Carros disponiveis: " << k << endl;
-    // cout << "Carros utilizados: " << k - carros << " - Custo de cada carro: " << r << endl;
-    // cout << endl;
 
     for (int i = 0; i < n+1; i++) {
         for (int v : listaAdj[i]) {
@@ -144,24 +108,12 @@ int main(){
         if(listaAdj[i].size() == 0){
             custoTotal += p[i-1];
             terceirizados++;
-            //cout << "Terceirizacao de " << i << "  Custo: " << p[i-1] << endl;
         }
     }
 
-    // cout << "Clientes terceirizados: " << terceirizados << endl << endl;
-
-    // cout << "Minimo de viagens: " << L << endl;
-    // cout << "Viagens feitas: " << count_demandas << endl << endl;
-
     custoTotal += (k - carros) * r;
 
-    //cout << "Custo Total: " << custoTotal << endl << endl;
-
     rotas = grafo.getRotas();
-
-    // grafo.printRotas();
-
-    // cout << endl;
 
     grafo.getAdj(rotas);
 
@@ -218,6 +170,8 @@ int main(){
     ////////////////////////////////////////////// VND OTIMIZACAO //////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    auto vnd_start = chrono::high_resolution_clock::now();
+
     VND vnd(Matriz);
     vector<vector<int>> novasRotas = rotas;
 
@@ -251,6 +205,9 @@ int main(){
         break;
     }
 
+    auto vnd_end = chrono::high_resolution_clock::now();
+    auto duration_vnd = chrono::duration_cast<chrono::nanoseconds>(vnd_end - vnd_start);
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////// VND OTIMIZACAO FINAL //////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -262,12 +219,7 @@ int main(){
     custoTotal = 0;
     custoRoteamento = 0;
     custoTerceirizacao = 0;
-    //grafo.imprimirGrafo();
     listaAdj = grafo.listaAdjacencia();
-
-    // cout << "Carros disponiveis: " << k << endl;
-    // cout << "Carros utilizados: " << k - carros << " - Custo de cada carro: " << r << endl;
-    // cout << endl;
 
     for (int i = 0; i < n+1; i++) {
         for (int v : listaAdj[i]) {
@@ -311,22 +263,8 @@ int main(){
 
     arquivo.close();
 
-    // cout << endl;
-
-    // count_demandas = 0;
-    // for(vector<int> rota : rotas){
-    //     count_demandas += rota.size()-2;
-    // }
-
-    // cout << "Viagens feitas: " << count_demandas << endl << endl;
-
-    // cout << "Custo Total: " << custoTotal << endl << endl;
-
-    auto end_time = chrono::high_resolution_clock::now();
-
-    auto duration = chrono::duration_cast<chrono::microseconds>(end_time - start_time);
-
-    cout << "Tempo de execucao: " << duration.count() << " microsegundos" << endl;
+    cout << "Tempo de execucao do guloso: " << duration_guloso.count() << " nano segundos" << endl;
+    cout << "Tempo de execucao do VND: " << duration_vnd.count() << " nano segundos" << endl;
 
     return 0;
 }
