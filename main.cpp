@@ -12,7 +12,7 @@ int main(){
     int n, k, Q, L, r;
     int clienteDaVez, capacidadeRestante, proximoCliente, custoTotal, carros, count_demandas, terceirizados, custoRoteamento, custoTerceirizacao;
     float custoDemanda;
-    string instancia = "n9k5_A";
+    string instancia = "n199k17_D";
 
     vector<vector<int>> listaAdj;
     vector<vector<int>> rotas;
